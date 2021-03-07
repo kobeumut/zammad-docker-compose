@@ -20,14 +20,6 @@ services:
       - zammad-backup:/var/tmp/zammad
       - zammad-data:/opt/zammad
 
-  zammad-elasticsearch:
-    environment:
-      - discovery.type=single-node
-    image: ${IMAGE_REPO}:zammad-elasticsearch${VERSION}
-    restart: ${RESTART}
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-
   zammad-init:
     command: ["zammad-init"]
     depends_on:
@@ -37,7 +29,6 @@ services:
       - POSTGRESQL_PASS=${POSTGRES_PASS}
     image: ${IMAGE_REPO}:zammad${VERSION}
     links:
-      - zammad-elasticsearch
       - zammad-postgresql
     restart: on-failure
     volumes:
@@ -78,7 +69,6 @@ services:
       - zammad-postgresql
     image: ${IMAGE_REPO}:zammad${VERSION}
     links:
-      - zammad-elasticsearch
       - zammad-memcached
       - zammad-postgresql
     restart: ${RESTART}
@@ -92,7 +82,6 @@ services:
       - zammad-railsserver
     image: ${IMAGE_REPO}:zammad${VERSION}
     links:
-      - zammad-elasticsearch
       - zammad-memcached
       - zammad-postgresql
     restart: ${RESTART}
@@ -113,8 +102,6 @@ services:
       - zammad-data:/opt/zammad
 
 volumes:
-  elasticsearch-data:
-    driver: local
   postgresql-data:
     driver: local
   zammad-backup:
